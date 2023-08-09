@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="../../assets/css/style/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="../../assets/images/favicon.png" />
+    <style>
+      /* Add this CSS code to change the background color of tbody */
+      #OrdersTable tbody td {
+        background-color:#191c24;
+        color: white;
+      }
+
+      /* Custom CSS to hide the arrow on the dropdown button */
+.no-arrow::after {
+  display: none !important;
+}
+
+    </style>
+    
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_sidebar.html -->
+      <%- include('../admin/partials/sidebar.ejs') %>
+<!-- partial -->
+<div class="container-fluid page-body-wrapper">
+<%- include('../admin/partials/nav.ejs') %>
+
+        <!-- partial:../../partials/_navbar.html -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Tables</a></li>
+                  <li class="breadcrumb-item active" aria-current="page"></li>
+                </ol>
+              </nav>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Coupon Management</h4>
+                    <div class="card-description">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#addCouponModal">Add Coupon</button>
+                      </div>
+
+<!-- Add Coupon Modal -->
+<div class="modal fade" id="addCouponModal" tabindex="-1" role="dialog" aria-labelledby="addCouponModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCouponModalLabel">Add Coupon</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Coupon Form -->
+        <form id="addCouponForm" action="/admin/addCoupon" method="POST">
+          <div class="form-group">
+            <label for="couponCode">Coupon Code</label>
+            <input type="text" class="form-control" id="couponCode" name="couponCode" required>
+          </div>
+          <div class="form-group">
+            <label for="discountPercentage">Discount Percentage</label>
+            <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" required>
+          </div>
+          <div class="form-group">
+            <label for="validFrom">Valid From</label>
+            <input type="date" class="form-control" id="validFrom" name="validFrom" required>
+          </div>
+          <div class="form-group">
+            <label for="validUntil">Valid Until</label>
+            <input type="date" class="form-control" id="validUntil" name="validUntil" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>.
+
+        </form>
+            <!-- Display Error Message -->
+            <% if (typeof errorMessage !== 'undefined' && errorMessage !== null) { %>
+              <div class="alert alert-danger">
+                <%= errorMessage %>
+              </div>
+            <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+          <!-- Orders Form -->
+          <div class="table-responsive">
+            <table border="1" id="OrdersTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Coupon Code</th>
+                        <th>Discount Percentage</th>
+                        <th> Valid From</th>
+                        <th>Valid Until</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% Coupons.forEach(function(coupon) { %>
+                        <tr>
+                            <td><%= coupon.couponCode %></td>
+                            <td><%= coupon.discountPercentage %></td>
+                            <td><%= coupon.validFrom.toDateString() %></td>
+                            <td><%= coupon.validUntil.toDateString() %></td>
+                            <td>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#editCouponModal">Edit Coupon</button>
+                                <!-- Edit Coupon Modal -->
+<div class="modal fade" id="editCouponModal" tabindex="-1" role="dialog" aria-labelledby="editCouponModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCouponModalLabel">Edit Coupon</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Coupon Edit Form -->
+        <form id="editCouponForm" action="/admin/edit-coupon/<%= coupon._id %>" method="POST">
+          <div class="form-group">
+            <label for="editCouponCode">Coupon Code</label>
+            <input type="text" class="form-control" id="editCouponCode" name="editCouponCode" value="<%= coupon.couponCode %>" required>
+          </div>
+          <div class="form-group">
+            <label for="editDiscountPercentage">Discount Percentage</label>
+            <input type="number" class="form-control" id="editDiscountPercentage" name="editDiscountPercentage" value="<%= coupon.discountPercentage %>" required>
+          </div>
+          <div class="form-group">
+            <label for="editValidFrom">Valid From</label>
+            <input type="date" class="form-control" id="editValidFrom" name="editValidFrom" value="<%= coupon.validFrom.toISOString().split('T')[0] %>" required>
+          </div>
+          <div class="form-group">
+            <label for="editValidUntil">Valid Until</label>
+            <input type="date" class="form-control" id="editValidUntil" name="editValidUntil" value="<%= coupon.validUntil.toISOString().split('T')[0] %>" required>
+          </div>
+          <!-- You can use a hidden input field to store the ID of the coupon to be edited -->
+          <input type="hidden" id="editCouponId" name="editCouponId" value="<%= coupon._id %>">
+
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+                                <form action="/admin/deleteCoupon/<%= coupon._id %>" method="POST">
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        
+        
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+      <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
+</div>
+
+                <!-- Edit Category Modal -->
+
+
+                        
+        
+    <!-- plugins:js -->
+    <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
+   
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script>
+      $(document).ready(function() {
+        $('#OrdersTable').DataTable();
+      });
+    </script>
+    
+    
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="../../assets/js/jss/jsoff-canvas.js"></script>
+    <script src="../../assets/js/jss/jshoverable-collapse.js"></script>
+    <script src="../../assets/js/jss/jsmisc.js"></script>
+    <script src="../../assets/js/jss/jssettings.js"></script>
+    <script src="../../assets/js/jss/jstodolist.js"></script>
+    <script src="../../assets/js/jss/editproductmodal.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <!-- End custom js for this page -->
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+  </body>
+</html>

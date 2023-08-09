@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="../../assets/css/style/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="../../assets/images/favicon.png" />
+    <style>
+      /* Add this CSS code to change the background color of tbody */
+      #OrdersTable tbody td {
+        background-color:#191c24;
+        color: white;
+      }
+
+      /* Custom CSS to hide the arrow on the dropdown button */
+.no-arrow::after {
+  display: none !important;
+}
+
+    </style>
+    
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_sidebar.html -->
+      <%- include('../admin/partials/sidebar.ejs') %>
+<!-- partial -->
+<div class="container-fluid page-body-wrapper">
+<%- include('../admin/partials/nav.ejs') %>
+        <!-- partial:../../partials/_navbar.html -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Tables</a></li>
+                  <li class="breadcrumb-item active" aria-current="page"></li>
+                </ol>
+              </nav>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Orders Table</h4>
+
+
+          <!-- Orders Form -->
+          <div class="table-responsive">
+            <table id="OrdersTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Sl. No</th>
+                        <th>User Name</th>
+                        <th> Order Id</th>
+                        <th>View Details</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% order.forEach(function(order, index) { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= order.user.username %></td>
+                        <td>Order ID: <%= order._id %></td>
+
+                        <td>
+                            <!-- Button to open the modal -->
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#orderModal<%= order._id %>">
+                                View Details
+                            </button>
+                        </td>
+                        <td>
+                            <% if (order.status === 'pending') { %>
+                            <!-- Action buttons -->
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle no-arrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <!-- Three dots (Unicode character) -->
+                                    …
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <!-- Cancel option -->
+                                    <form action="/admin/order/<%= order._id %>/status" method="POST">
+                                        <input type="hidden" name="status" value="cancel">
+                                        <button type="submit" class="dropdown-item">Cancel</button>
+                                    </form>
+                                    <!-- Delivered option -->
+                                    <form action="/admin/order/<%= order._id %>/status" method="POST">
+                                        <input type="hidden" name="status" value="delivered">
+                                        <button type="submit" class="dropdown-item">Delivered</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <% } else { %>
+                            <!-- Display the order status if not pending -->
+                            <%= order.status %>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <!-- Modal for order details -->
+                    <div class="modal fade" id="orderModal<%= order._id %>" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="orderModalLabel">Order Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Display order details here -->
+                                    
+                                    
+                                    <% order.items.forEach(function(item) { %>
+                                    <% if (item.product) { %>
+                                    <p>Product Name: <%= item.product.productName %></p>
+                                    <img src="/uploads/<%= item.product.itemImage[0] %>" width="100" height="100">
+                                    <% } else { %>
+                                    <p>Product Name: Product not found</p>
+                                    <!-- Handle the case when product is null or undefined -->
+                                    <% } %>
+                                    <% }) %>
+                                    <!-- Add other order details here -->
+                                    <p>Sub Total: <%= order.subtotal %></p>
+                                    <p>Total Amount: <%= order.totalAmount %></p>
+                                    <p>Payment Method: <%= order.paymentMethod %></p>
+                                    <p>Shipping Address:</p>
+                                    <p><%= order.shippingAddress.houseNumber %>, <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>, <%= order.shippingAddress.pin %></p>
+                                    <p>Order Date: <%= order.createdAt.toDateString() %></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        
+        
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+      <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
+</div>
+
+                <!-- Edit Category Modal -->
+
+
+                        
+        
+    <!-- plugins:js -->
+    <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
+    <script>
+        $(document).ready(function() {
+          // Edit Product button click event handler
+          $('.edit-product').click(function() {
+            var productId = $(this).data('id');
+            var productName = $(this).data('name');
+            var productImage = $(this).data('image');
+            var productDescription = $(this).data('description');
+            var productBrand = $(this).data('brand');
+            var productPrice = $(this).data('price');
+            var productQuantity = $(this).data('quantity');
+            var productSize = $(this).data('size');
+            var productColors = $(this).data('colors');
+      
+            // Set the values in the edit modal form
+            $('#editProductModal #editProductId').val(productId);
+        $('#editProductModal #editProductName').val(productName);
+        $('#editProductModal #editProductImage').val(productImage);
+        $('#editProductModal #editProductDescription').val(productDescription);
+        $('#editProductModal #editProductBrand').val(productBrand);
+        $('#editProductModal #editProductPrice').val(productPrice);
+        $('#editProductModal #editProductQuantity').val(productQuantity);
+        $('#editProductModal #editProductSize').val(productSize);
+        $('#editProductModal #editProductColors').val(productColors);
+          });
+        });
+      </script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script>
+      $(document).ready(function() {
+        $('#OrdersTable').DataTable();
+      });
+    </script>
+    
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="../../assets/js/jss/jsoff-canvas.js"></script>
+    <script src="../../assets/js/jss/jshoverable-collapse.js"></script>
+    <script src="../../assets/js/jss/jsmisc.js"></script>
+    <script src="../../assets/js/jss/jssettings.js"></script>
+    <script src="../../assets/js/jss/jstodolist.js"></script>
+    <script src="../../assets/js/jss/editproductmodal.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <!-- End custom js for this page -->
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+  </body>
+</html>

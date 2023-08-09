@@ -1,0 +1,132 @@
+<header id="header-area">
+    <div class="ruby-container">
+        <div class="row">
+            <!-- Logo Area Start -->
+            <div class="col-3 col-lg-1 col-xl-2 m-auto">
+                <a href="index.html" class="logo-area">
+                    <img src="/assets/img/logo.png" alt="Logo" class="img-fluid"/>
+                </a>
+            </div>
+            <!-- Logo Area End -->
+
+            <!-- Navigation Area Start -->
+            <div class="col-3 col-lg-9 col-xl-8 m-auto">
+                <div class="main-menu-wrap">
+                    <nav id="mainmenu">
+                        <ul>
+                            <li class="home">
+                                <a href="/">Home</a>
+                            </li>
+                            <li class="dropdown-show">
+                                <a href="/shop">Shop</a>
+                               
+                            </li>
+
+                            <li class="dropdown-show">
+                                <a href="shop-left-full-wide.html">Women</a>
+                               
+                            </li>
+
+                            <li class="dropdown-show">
+                                <a href="#">Luxe</a>
+                                <ul class="dropdown-nav">
+                                    <!-- Dropdown Menu Items -->
+                                </ul>
+                            </li>
+
+                            <% if (userLogin !== undefined) { %>
+                            <li>
+                                <a href="/userlogout">Logout</a>
+                            </li>
+                            <% } else { %>
+                            <li>
+                                <a href="/login">Login</a>
+                            </li>
+                            <% } %>
+                            
+                            <li>
+                                <a href="contact.html">Contact Us</a>
+                            </li>
+                            <div class="wrap-icon-header flex-w flex-r-m">
+                                <% if (userLogin !== undefined) { %>
+                                
+                        
+                                    <li> <a href=""><%=name%></a></li><%}%>
+                            </div>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+                        <!-- Navigation Area End -->
+
+      
+     <!-- Header Right Meta Start -->
+     <div class="col-6 col-lg-2 m-auto">
+        <div class="header-right-meta text-right">
+            <ul>
+                <li class="search-container">
+                    <form action="/search" method="GET">
+                      <div class="container">
+                        <div class="input-group">
+                          <input type="text" class="form-control" name="search" placeholder="Search for...">
+                          <span class="input-group-btn">
+                            <button class="btn btn-search" type="submit"><i class="fa fa-search fa-fw"></i> Search</button>
+                          </span>
+                        </div>
+                      </div>
+                    </form>
+                  </li>  
+                  <li class="myaccount"><a href="/wishlist"><i class="fa fa-heart-o" aria-hidden="true"></i></a>      
+                <li class="myaccount"><a href="/profile"><i class="fa fa-user" aria-hidden="true"></i></a>
+                <li class="shop-cart"><a href="/cart"><i class="fa fa-shopping-bag"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+</div>
+</div>
+
+</header>
+<style>
+    .search-container {
+        position: relative;
+    }
+    
+    .search-input {
+        padding: 10px;
+        border-radius: 30px;
+        border: none;
+        outline: none;
+        width: 0;
+        transition: width 0.3s ease-in-out;
+        visibility: hidden;
+        opacity: 0;
+    }
+    
+    .search-input.active {
+        width: 200px;
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    .search-btn {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    .search-btn i {
+        color: #5cbdbb;
+    }
+    
+    </style>
+
+

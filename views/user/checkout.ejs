@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="meta description">
+
+    <title>Checkout :: Ruby - Jewelry Store e-Commerce Bootstrap 4 Template</title>
+
+    <!--=== Favicon ===-->
+    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon"/>
+
+    <!--== Google Fonts ==-->
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Droid+Serif:400,400i,700,700i"/>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i"/>
+
+    <!--=== Bootstrap CSS ===-->
+    <link href="assets/css/vendor/bootstrap.min.css" rel="stylesheet">
+    <!--=== Font-Awesome CSS ===-->
+    <link href="assets/css/vendor/font-awesome.css" rel="stylesheet">
+    <!--=== Plugins CSS ===-->
+    <link href="assets/css/plugins.css" rel="stylesheet">
+    <!--=== Main Style CSS ===-->
+    <link href="assets/css/style.css" rel="stylesheet">
+
+    <!-- Modernizer JS -->
+    <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
+
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+         .hidden-text {
+         display: none;
+                        }
+
+        #free-Shipping {
+  color: red;
+  font-weight: bold;
+}
+
+.gif-image {
+  display: inline-block;
+  width: 76px;
+  height: 76px;
+  margin-right: 5px;
+}
+    </style>
+</head>
+<body>
+<!--== Header Area Start ==-->
+<%- include('../user/partials/header.ejs') %>
+<!--== Header Area End ==-->
+
+<!--== Page Title Area Start ==-->
+<div id="page-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="page-title-content">
+                    <h1>Checkout</h1>
+                    <ul class="breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="shop-left-full-wide.html">Shop</a></li>
+                        <li><a href="#" class="active">Checkout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--== Page Title Area End ==-->
+
+<!--== Page Content Wrapper Start ==-->
+<div id="page-content-wrapper" class="p-9">
+    <div class="container">
+        <!--== Checkout Page Content Area ==-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Checkout Login Coupon Accordion Start -->
+                <div class="checkoutaccordion" id="checkOutAccordion">
+                    <div class="card">
+                        <h3>Have A Coupon? <span data-toggle="collapse" data-target="#couponaccordion">Click Here To Enter Your Code</span>
+                        </h3>
+                        <div id="couponaccordion" class="collapse" data-parent="#checkOutAccordion">
+                            <div class="card-body">
+                                <div class="cart-update-option">
+                                    <div class="apply-coupon-wrapper">
+                                        <form id="applyCouponForm" class="d-block d-md-flex" onsubmit="applyCoupon(event)">
+                                            <select id="couponInput" name="couponCode" placeholder="Enter Your Coupon Code">
+                                              <option value="" selected disabled>Select a Coupon</option>
+                                              <% coupons.forEach((coupon) => {
+                                                // Check if the current date is within the validFrom and validUntil dates of the coupon
+                                                const currentDate = new Date();
+                                                const validFrom = new Date(coupon.validFrom);
+                                                const validUntil = new Date(coupon.validUntil);
+                                                if (currentDate >= validFrom && currentDate <= validUntil) {
+                                              %>
+                                                <option value="<%= coupon.couponCode %>">
+                                                  <%= coupon.couponCode %> - <%= coupon.discountPercentage %>% Discount
+                                                </option>
+                                              <% }
+                                              }) %>
+                                            </select>
+                                            <button type="submit" class="btn-add-to-cart">Apply Coupon</button>
+                                          </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Checkout Login Coupon Accordion End -->
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Checkout Billing Details -->
+            <div class="col-lg-6">
+                <div class="checkout-billing-details-wrap">
+                    <h2>Billing Details</h2>
+                    <div class="billing-form-wrap">
+                        <% if (address && address.length > 0) { %>
+                            <div class="saved-addresses">
+                                <h5>Saved Addresses</h5>
+                                <div class="address-grid">
+                                    <% address.forEach((address) => { %>
+                                    <div class="address-item">
+                                        <input type="radio" name="address" value="<%= address._id %>" >
+                                        <label>
+                                            <div class="address-details">
+                                                <span class="address-name">Name: <%= address.firstName %> <%= address.lastName %></span>
+                                                <span class="address-line">House / Building No: <%= address.houseNumber %></span>
+                                                <span class="address-line">City: <%= address.city %></span>
+                                                <span class="address-line">State: <%= address.state %></span>
+                                                <span class="address-line">Pin: <%= address.pin %></span>
+                                                <span class="address-line">Mobile Number: <%= address.phone %></span>
+                                            </div>
+                                        </label>
+                                        <a href="#" class="edit-address-link" data-toggle="modal" data-target="#editAddressModal-<%= address._id %>">Edit</a>
+                                    </div>
+                                     <!-- Edit Address Modal -->
+          <div class="modal fade" id="editAddressModal-<%= address._id %>" tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel-<%= address._id %>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="editAddressModalLabel-<%= address._id %>">Edit Address</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form action="/edit-address/<%= address._id %>" method="post" class="checkout_form">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="checkout_form_input">
+                          <p>First Name <span>*</span></p>
+                          <input type="text" name="firstName" value="<%= address.firstName %>" required>
+                        </div>
+                        <div class="checkout_form_input">
+                          <p>Last Name <span>*</span></p>
+                          <input type="text" name="lastName" value="<%= address.lastName %>" required>
+                        </div>
+                        <div class="checkout_form_input">
+                          <p>Email Address <span>*</span></p>
+                          <input type="email" name="email" value="<%= address.email %>" required>
+                        </div>
+                        <div class="checkout_form_input">
+                          <p>House No./Building No. <span>*</span></p>
+                          <input type="text" name="houseNumber" value="<%= address.houseNumber %>" required>
+                        </div>
+                        <div class="checkout_form_input">
+                          <p>State <span>*</span></p>
+                          <input type="text" name="state" value="<%= address.state %>" required>
+                        </div>
+                        <div class="checkout_form_input">
+                          <p>City <span>*</span></p>
+                          <input type="text" name="city" value="<%= address.city %>" required>
+                        </div>
+                        <div class="checkout_form_input">
+                          <p>Pin <span>*</span></p>
+                          <input type="tel" name="pin" value="<%= address.pin %>" required>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+                                  </form>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+                            <div class="checkout-box-wrap">
+                                <div class="single-input-item">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="ship_to_different">
+                                        <label class="custom-control-label" for="ship_to_different">Ship to a different
+                                            address?</label>
+                                    </div>
+                                </div>
+                                <div class="ship-to-different single-form-row">
+                                    <form action="/save-address" method="post" class="checkout_form">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="single-input-item">
+                                                
+                                                <label for="edit_firstName">First Name</label>
+                                                <input type="text" class="form-control" id="edit_firstName" name="edit_firstName" value="<%= address.firstName || '' %>" required>
+                                              </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="single-input-item">
+                                                <label for=edit_lastName>Last Name</label>
+                                                <input type="text" class="form-control" id="edit_lastName" name="edit_lastName" value="<%= address.lastName || '' %>" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="single-input-item">
+                                        <label for="edit_email">Email Address</label>
+                                        <input type="email" class="form-control" id="edit_email" name="edit_email" value="<%= address.email || '' %>" required>
+                                    </div>
+
+                                    <div class="single-input-item">
+                                        <label for="edit_house_number">House Number</label>
+                                        <input type="text" class="form-control" id="edit_house_number" name="edit_house_number" value="<%= address.houseNumber || '' %>" required>
+                                    </div>
+
+                                    <div class="single-input-item">
+                                        <label for="edit_state" class="required">State</label>
+                                        <select name="edit_state" id="edit_state">
+                                          <option value="Kerala" <%= address.state === 'Kerala' ? 'selected' : '' %>>Kerala</option>
+                                          <option value="Karnataka" <%= address.state === 'Karnataka' ? 'selected' : '' %>>Karnataka</option>
+                                          <option value="TamilNadu" <%= address.state === 'TamilNadu' ? 'selected' : '' %>>TamilNadu</option>
+                                          <option value="Goa" <%= address.state === 'Goa' ? 'selected' : '' %>>Goa</option>
+                                          <option value="Madhya Pradesh" <%= address.state === 'Madhya Pradesh' ? 'selected' : '' %>>Madhya Pradesh</option>
+                                          <option value="Maharashtra" <%= address.state === 'Maharashtra' ? 'selected' : '' %>>Maharashtra</option>
+                                          <option value="Andhra Pradesh" <%= address.state === 'Andhra Pradesh' ? 'selected' : '' %>>Andhra Pradesh</option>
+                                        </select>
+                                      </div>
+
+                                      <div class="single-input-item">
+                                        <label for="edit_street_address">Street Address</label>
+                                        <input type="text" class="form-control" id="edit_street_address" name="edit_street_address" value="<%= address.streetAddress || '' %>" required>
+                                      </div>
+
+                                    <div class="single-input-item">
+                                        <label for="edit_city" class="required">Town / City</label>
+                                        <input type="text" class="form-control" id="edit_city" name="edit_city" value="<%= address.city || '' %>" required>
+                                    </div>
+                                    <div class="single-input-item">
+                                        <label for="edit_postcode" class="required">Postcode / ZIP</label>
+                                        <input type="text" id="edit_postcode" name="edit_postcode" value="<%= address.pin || '' %>" required/>
+                                      </div>
+                                    
+                                    <div class="single-input-item">
+                                        <label for="edit_phone" class="required">Phone Number</label>
+                                        <input type="tel" id="edit_phone" name="edit_phone" value="<%= address.phone || '' %>" required/>
+                                    </div>
+                                    <div class="single-input-item">
+                                        <input type="submit" value="Save Address" class="btn-save-address">
+                                      </div>
+                                      </form>
+                                </div>
+                            </div>
+
+                            <div class="single-input-item">
+                                <label for="ordernote">Order Note</label>
+                                <textarea name="ordernote" id="ordernote" cols="30" rows="3"
+                                          placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary Details -->
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="order-summary-details">
+                    <h2>Your Order Summary</h2>
+                    <div class="order-summary-content">
+                        <!-- Order Summary Table -->
+                        <div class="order-summary-table table-responsive text-center">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Products</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% cartItems.forEach((cartItem) => { %>
+                                    <tr>
+                                        <td><a href="" class="hidden-text"><%= cartItem.product._id %></a><a href="single-product.html"><%= cartItem.product.productName %> <strong class="quantity-amount"> × <%= cartItem.quantity %></strong></a></td>
+                                        <td><strong>Rs. <%= cartItem.quantity * cartItem.product.offerPrice %></strong></td>
+                                    </tr>
+                                    <% }) %>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td>Sub Total</td>
+                                    <td><strong>Rs  <span id="subtotal">0.00</span></strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Shipping</td>
+                                    <td><strong>Rs. <span id="shipping">0.00</span></strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Total Amount</td>
+                                    <td><strong>Rs. <span  id="totalAmount">0.00</span></strong></td>
+                                </tr>
+                            </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Order Payment Method -->
+                        <div class="order-payment-method">
+                            <div class="single-payment-method show">
+                                <div class="payment-method-name">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="cashon" name="paymentmethod" value="cash" class="custom-control-input" checked/>
+                                        <label class="custom-control-label" for="cashon">Cash On Delivery</label>
+                                    </div>
+                                </div>
+                                <div class="payment-method-details" data-method="cash">
+                                    <p>Pay with cash upon delivery.</p>
+                                </div>
+                            </div>
+
+                            <div class="single-payment-method">
+                                <div class="payment-method-name">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="directbank" name="paymentmethod" value="online"  class="custom-control-input"/>
+                                        <label class="custom-control-label" for="directbank">Online Payment</label>
+                                    </div>
+                                </div>
+                                <div class="payment-method-details" data-method="bank">
+                                    <p>You can make online payments through this </p>
+                                </div>
+                            </div>
+                            <div class="summary-footer-area">
+                                <button type="button" id="placeOrderBtn" class="btn-add-to-cart">Place Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--== Checkout Page Content End ==-->
+    </div>
+</div>
+<!--== Page Content Wrapper End ==-->
+
+
+<!-- Footer Area Start -->
+<%- include('../user/partials/footer.ejs') %>
+<!-- Footer Area End -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    // Function to update the total amount and discount dynamically
+    function updateOrderSummary() {
+        var subtotal = 0;
+        var totalAmount = 0;
+
+        // Calculate subtotal and total amount based on cart items.
+        <% cartItems.forEach((item) => { %>
+            subtotal += <%= item.product.offerPrice %> * <%= item.quantity %>;
+        <% }) %>
+
+        var shipping = subtotal > 1000 ? 0 : 70;
+        var totalAmount = subtotal + shipping;
+
+        // Update the HTML elements with the calculated values
+        document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+        document.getElementById('shipping').textContent = shipping.toFixed(2);
+        document.getElementById('totalAmount').textContent = totalAmount.toFixed(2);
+    }
+
+    // Call the updateOrderSummary function when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        updateOrderSummary();
+    });
+      </script>
+    <script>
+
+    // Function to place the order
+    function placeOrder() {
+        const selectedAddress = document.querySelector('input[name="address"]:checked');
+        const selectedPayment = document.querySelector('input[name="paymentmethod"]:checked');
+         console.log(selectedAddress,"SELECT")
+        // Validate the selected address and payment method
+        if (!selectedAddress || !selectedPayment) {
+            alert('Please select an address and a payment method.');
+            return;
+        }
+
+
+        // Retrieve the necessary data to send to the server-side
+        const addressId = selectedAddress.value;
+        console.log(addressId)
+        const paymentMethod = selectedPayment.value;
+
+        // Construct the order data object
+        const orderData = {
+            addressId: addressId,
+            paymentMethod: paymentMethod,
+            subtotal: parseFloat(document.getElementById('subtotal').textContent),
+            shipping: parseFloat(document.getElementById('shipping').textContent),
+            totalAmount: parseFloat(document.getElementById('totalAmount').textContent),
+            products: []
+        };
+        
+        console.log(orderData,"order")
+
+        // Retrieve the product details from the order summary table
+        const productRows = document.querySelectorAll('.order-summary-table tbody tr');
+        productRows.forEach((row) => {
+            const productId = row.querySelector('.hidden-text').textContent;
+            const quantitywithname = row.querySelector('.quantity-amount').textContent;
+            console.log("product name ",productId)
+            const quantity = parseInt(quantitywithname.split(' × ')[1]);
+            console.log("quantity",quantity)
+            const productTotal = parseFloat(orderData.subtotal) + parseFloat(orderData.shipping);
+
+            console.log(productTotal)
+            // Extract the product name and remove the quantity and " × " from it
+         
+
+            // Create a product object and add it to the order data
+            const product = {
+                Id: productId,
+                quantity: quantity,
+                total: productTotal           
+             };
+
+            orderData.products.push(product);
+        });
+        console.log(subtotal, typeof subtotal);
+        // Send the order data to the server-side
+        fetch('/placeOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the server
+                if (data.success) {
+                    if (paymentMethod === 'cash') {
+                    // Order placed successfully, redirect to the success page
+                    window.location.href = '/success';
+                    } else if (paymentMethod === 'online') {
+                         // Razorpay payment
+                         const razorpayOrderId = data.razorpayOrderId;
+                         console.log("razorpayOrderId",razorpayOrderId)
+                         const options = {
+                            key:'rzp_test_XlE6d2kpU2fO5P',
+                            amount: parseFloat(orderData.totalAmount) *100,
+                            currency:'INR',
+                            order_id : razorpayOrderId,
+                            name:'Ruby Fashion Store',
+                            description:'online payment',
+                            handler: function (response) {
+                                window.location.href = '/success'; 
+                            },
+                            prefill: {
+                                name: 'user.userName',
+                                email:'user.email',
+                                contact:'user.phone',               
+                            }
+                         };
+                        const razorpayInstance = new Razorpay(options);
+                        razorpayInstance.open();
+                    }
+                    } else {
+                    // Failed to place the order, display an error message
+                    alert('Insufficient quantity for the selected products');
+                }
+            
+        })
+            .catch((error)=> {
+                console.error('Error:', error);
+                alert('Failed to place the order. Please try again.');
+            });
+    }
+     document.getElementById('placeOrderBtn').addEventListener('click', placeOrder);
+
+</script>
+<script>
+    const applyCouponForm = document.getElementById('applyCouponForm');
+    
+   
+    const couponInput = document.getElementById('couponInput')
+    const couponErrorMessage = document.getElementById('couponErrorMessage');
+  
+    applyCouponForm.addEventListener('submit', (event) => {
+        const totalAmountSpan = document.getElementById('totalAmount');
+        const totalAmountCart = parseFloat(totalAmountSpan.textContent);
+        const couponCode = couponInput.value.trim();
+      event.preventDefault();
+  
+     
+      console.log("couponCode",couponCode)
+  
+      // Send the coupon code to the server to apply the discount
+      fetch('/applyCoupon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ couponCode,totalAmountCart }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Update the total amount on the page with the discounted amount
+            document.getElementById('totalAmount').innerText = `${data.updatedTotalAmount}`;
+            // Clear the coupon input field and error message
+            couponInput.value = '';
+            couponErrorMessage.textContent = '';
+          } else {
+            // Display the error message if the coupon code is invalid
+            couponErrorMessage.textContent = 'Invalid coupon code. Please try again.';
+          }
+        })
+        .catch((error) => {
+          console.error('Error applying coupon:', error);
+          couponErrorMessage.textContent = 'An error occurred while applying the coupon. Please try again later.';
+        });
+    });
+  </script>
+
+
+</body>
+
+</html>
+

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin</title>
+    <!-- plugins:css -->
+<!-- Add these links to your HTML head -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="../../assets/css/style/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="../../assets/images/favicon.png" />
+    <style>
+      /* Add this CSS code to change the background color of tbody */
+      #productTable tbody td {
+        background-color:#191c24;
+        color: white;
+      }
+/* In your CSS file */
+#filterSales input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  color: black;
+}
+
+    </style>
+    
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_sidebar.html -->
+      <%- include('../admin/partials/sidebar.ejs') %>
+<!-- partial -->
+<div class="container-fluid page-body-wrapper">
+<%- include('../admin/partials/nav.ejs') %>
+        <!-- partial:../../partials/_navbar.html -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title"> Sales </h3>
+              <nav aria-label="breadcrumb">
+                <td><a href="/admin/download-all-sales-pdf"class="btn btn-primary">Invoice</a></td>
+              </nav>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title"></h4>
+                    <div class="card-description">
+                      </div>
+                    <div  class="table-responsive">
+                      <table id="productTable" class="table table-hover">
+                        <thead>
+                          <td colspan="9">
+                            <form action="/admin/filterSales" method="post" id="filterSales">
+                              <label for="startDate">Start Date:</label>
+                              <input type="date" id="startDate" name="startDate" style="background-color: #191c24; color: white;">
+                              <label for="endDate">End Date:</label>
+                              <input type="date" id="endDate" name="endDate" style="background-color: #191c24; color: white;">
+                              <button type="submit" style="background-color: #191c24; color: white;">Apply Filter</button>
+                            </form>
+                          </td>
+                          <tr>
+                            <th>No</th>
+                            <th>sale ID</th>
+                            <th>User</th>
+                            <th>Items</th>
+                            <th>Subtotal</th>
+                            <th>Total Amount</th>
+                            <th>Payment <br>
+                              Method</th>
+                            <th>Shipping <br>Address</th>
+                            <th>Status</th>
+                            <th>Invoice</th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                            <tr>
+                            </tr>
+                            <% sales.forEach((sale,index) => { %>
+                              <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= sale.orderId %></td>
+                                <td><%= sale.user.username %></td>
+                                <td>
+                                  <% let productNumber = 1; %>
+                                  <% sale.items.forEach(item => { %>
+                                    <% const productNameWords = item.product.productName.split(" "); %>
+                                    <% const truncatedProductName = productNameWords.slice(0, 5).join(" "); %>
+                                    <%= productNumber %>. <%= truncatedProductName.length > 15 ? truncatedProductName.slice(0, 10) + "..." : truncatedProductName %>
+                                    <br> Quantity: <%= item.quantity %><br>
+                                    <% productNumber++; %>
+                                  <% }) %>
+                                </td>
+                                <td><%= sale.subtotal %></td>
+                                <td><%= sale.totalAmount %></td>
+                                <td><%= sale.paymentMethod %></td>
+                                <td>
+                                  <%= sale.shippingAddress.name %><br>
+                                  <%= sale.shippingAddress.houseNumber %><br>
+                                  <%= sale.shippingAddress.city %><br>
+                                  <%= sale.shippingAddress.state %><br>
+                                  <%= sale.shippingAddress.pin %><br>
+                                  <%= sale.shippingAddress.phone %><br>
+                                </td>
+                                <td><%= sale.status %></td>
+                              <td><a href="/admin/download-sales-pdf/<%= sale._id %>" class="btn btn-primary">Invoice</a></td>
+                            <% }) %>
+                          </tr>
+                          </tbody>
+                        </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- main-panel ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
+</div>
+  
+    <!-- plugins:js -->
+    <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
+    <!-- Plugin js for this page -->
+<script>
+  $(document).ready(function () {
+    $('#productTable').DataTable({
+      // Customize DataTables options as needed
+      "paging": true,
+      "ordering": true,
+      // Add more options here
+    });
+  });
+</script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="../../assets/js/jss/jsoff-canvas.js"></script>
+    <script src="../../assets/js/jss/jshoverable-collapse.js"></script>
+    <script src="../../assets/js/jss/jsmisc.js"></script>
+    <script src="../../assets/js/jss/jssettings.js"></script>
+    <script src="../../assets/js/jss/jstodolist.js"></script>
+    <script src="../../assets/js/jss/editproductmodal.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+  
+
+  </body>
+</html>
