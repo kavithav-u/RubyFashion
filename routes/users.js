@@ -16,6 +16,9 @@ const couponController = require('../controller/couponController');
 
 userRouter.get("/",usermiddlewear.userlogout,userController.home);
 userRouter.get("/login",usermiddlewear.userlogout,userController.userlogin)
+userRouter.get("/forgotPassword",usermiddlewear.userlogout,userController.forgotPassword)
+userRouter.post("/forgotPassword",usermiddlewear.userlogout,userController.getCredentials)
+
 userRouter.get("/register",userController.userRegister);
 userRouter.post("/register",userController.newuser);
 userRouter.post("/",userController.login)

@@ -3,7 +3,8 @@ const twilio = require('twilio');
 const User = require('../models/user');
 const productModel = require('../models/product');
 const Category = require('../models/category');
-const Banner = require('../models/banner')
+const Banner = require('../models/banner');
+const nodemailer = require('nodemailer');
 
 
 // Twilio configuration
@@ -34,6 +35,55 @@ const userlogin=(req,res)=>{
 
 const userRegister=(req,res)=>{
     res.render("user/register")
+}
+
+const forgotPassword=(req,res)=>{
+  res.render("user/forgotPassword")
+}
+
+const getCredentials = async (req, res) => {
+  try {
+    const email = req.body.email;
+    console.log("email",email);
+    const user = await User.find({email:email})
+    console.log("user",user)
+    console.log("ee",user[0].username)
+    if(!user){
+      return res.send('User not found.');
+    }
+
+    
+    // Send an email with the user's credentials
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+          user: 'vukavitha98@gmail.com',
+          pass: 'pevhkzkipskwfwkl',
+      },
+  });
+console.log("transporter",transporter)
+console.log("userrrr",user[0].username)
+  const mailOptions = {
+      from: 'vukavitha98@gmail.com',
+      to: email,
+      subject: 'Your Credentials',
+      text: `Username: ${user[0].username}\nPassword: ${user[0].password}`,
+  };
+  console.log("mailOptions",mailOptions)
+
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          console.log(error);
+          return res.send('Error sending email.');
+      } else {
+          console.log('Email sent: ' + info.response);
+          return res.send('Email sent with user credentials.');
+      }
+  });
+} catch (err) {
+      console.log(err);
+      res.render("user/login", { message: "An error occurred, please try again" });
+  }
 }
 
 
@@ -289,6 +339,8 @@ const userlogout=(req,res)=>{
     userlogout,
     sample,
     verifyOtp,
-    search
+    search,
+    forgotPassword,
+    getCredentials
 
 }
