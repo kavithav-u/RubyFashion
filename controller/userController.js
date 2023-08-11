@@ -57,14 +57,14 @@ const getCredentials = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-          user: 'vukavitha98@gmail.com',
-          pass: 'pevhkzkipskwfwkl',
+          user: process.env.RECOVER_EMAIL,
+          pass: process.env.RECOVER_EMAIL_PASS,
       },
   });
 console.log("transporter",transporter)
 console.log("userrrr",user[0].username)
   const mailOptions = {
-      from: 'vukavitha98@gmail.com',
+      from: process.env.RECOVER_EMAIL,
       to: email,
       subject: 'Your Credentials',
       text: `Username: ${user[0].username}\nPassword: ${user[0].password}`,
@@ -76,9 +76,10 @@ console.log("userrrr",user[0].username)
           console.log(error);
           return res.send('Error sending email.');
       } else {
-          console.log('Email sent: ' + info.response);
-          return res.send('Email sent with user credentials.');
-      }
+        console.log('Email sent: ' + info.response);
+        // Redirect to login page with success message
+        return res.render('user/login',{message:"Email sent with user credentials."});
+    }
   });
 } catch (err) {
       console.log(err);
